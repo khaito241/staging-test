@@ -3,8 +3,9 @@ Model ecommerce_products {
   label: 'Products'
   description: ''
   data_source_name: 'demodb'
+
   dimension id {
-    label: 'Id'
+    label: 'Product ID'
     type: 'number'
     hidden: false
     definition: @sql {{ #SOURCE.id }};;
@@ -16,10 +17,10 @@ Model ecommerce_products {
     definition: @sql {{ #SOURCE.category_id }};;
   }
   dimension name {
-    label: 'Name'
+    label: 'Product Name'
     type: 'text'
-    hidden: false
     definition: @sql {{ #SOURCE.name }};;
+    description: "Name of the product"
   }
   dimension merchant_id {
     label: 'Merchant Id'
@@ -39,7 +40,33 @@ Model ecommerce_products {
     hidden: false
     definition: @sql {{ #SOURCE.created_at }};;
   }
+  dimension product_google_link {
+    label: "Product (image)"
+    type: "text"
+    definition: @sql CONCAT('<a href="','https://www.google.com/search?tbm=isch&q=',{{ name }},'" target="_blank">',{{ name }},'</a>');;
+  }
 
-  owner: 'khai.to+staging+test@holistics.io'
-  table_name: '"ecommerce"."products"'
+  dimension cost {
+    label: 'Cost'
+    type: 'number'
+    definition: @sql ROUND({{price}}*0.3) ;;
+  }
+
+  dimension product_merchant {
+    label: 'Product Name (from Merchant)'
+    type: 'text'
+    description: "different merchants can list same product name => this fields show the Product name listed by which specific merchant"
+    hidden: false
+    definition: @sql {{ #SOURCE.product_merchant }} ;;
+  }
+
+  measure total_products {
+    label: 'Total Products'
+    type: 'number'
+    definition: @sql count( {{ id }} ) ;;
+  }
+
+
+  owner: 'vincent+demo4@holistics.io'
+  table_name: '\"ecommerce\".\"products\"'
 }
