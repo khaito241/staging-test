@@ -452,7 +452,7 @@ Young adult female customers (under 30) are currently our most valuable and loya
         data_type: 'number'
       }
       filter {
-        field: ref('ecommerce_users', 'email_pii')
+        field: r(ecommerce_users.email_pii)
         operator: 'top'
         value: 10
         options {
@@ -472,7 +472,7 @@ Young adult female customers (under 30) are currently our most valuable and loya
       }
       fields: [
         VizFieldFull {
-          ref: ref('ecommerce_users', 'full_name')
+          ref: r(ecommerce_users.full_name)
           format {
             type: 'text'
           }
@@ -480,14 +480,14 @@ Young adult female customers (under 30) are currently our most valuable and loya
             type: 'GoToUrl'
             label: 'Email Customer'
             url: ActionFieldInput {
-              ref: ref('ecommerce_users', 'email_user')
+              ref: r(ecommerce_users.email_user)
               aggregation: 'min'
             }
           }
           uname: 'ecommerce_users_full_name'
         },
         VizFieldFull {
-          ref: ref('ecommerce_countries', 'name')
+          ref: r(ecommerce_countries.name)
           format {
             type: 'text'
           }
@@ -511,7 +511,7 @@ Young adult female customers (under 30) are currently our most valuable and loya
           uname: 'custom_total_delivered_orders'
         },
         VizFieldFull {
-          ref: ref('ecommerce_orders', 'days_since_last_order')
+          ref: r(ecommerce_orders.days_since_last_order)
           format {
             type: 'number'
             pattern: 'inherited'
@@ -528,7 +528,8 @@ Young adult female customers (under 30) are currently our most valuable and loya
         }
       ]
       settings {
-        row_height: 'multiple_lines'
+        wrap_header_text: true
+        wrap_cell_text: true
         show_row_number: true
         sorts: [
           SortSetting {
@@ -589,12 +590,9 @@ Young adult female customers (under 30) are currently our most valuable and loya
         calc_type: 'measure'
         data_type: 'number'
       }
-      theme {
-
-      }
       rows: [
         VizFieldFull {
-          ref: ref('ecommerce_users', 'age_group')
+          ref: r(ecommerce_users.age_group)
           format {
             type: 'text'
           }
@@ -602,7 +600,7 @@ Young adult female customers (under 30) are currently our most valuable and loya
       ]
       columns: [
         VizFieldFull {
-          ref: ref('ecommerce_users', 'gender')
+          ref: r(ecommerce_users.gender)
           format {
             type: 'text'
           }
@@ -689,11 +687,8 @@ This format is especially useful for:
     label: 'Users Sign Up Over Time'
     viz: ColumnChart {
       dataset: demo_ecommerce_version_2
-      theme {
-
-      }
       x_axis: VizFieldFull {
-        ref: ref('ecommerce_users', 'sign_up_at')
+        ref: r(ecommerce_users.sign_up_at)
         transformation: 'datetrunc quarter'
         format {
           type: 'date'
@@ -757,12 +752,9 @@ This format is especially useful for:
         calc_type: 'measure'
         data_type: 'number'
       }
-      theme {
-
-      }
       rows: [
         VizFieldFull {
-          ref: ref('ecommerce_users', 'age_group')
+          ref: r(ecommerce_users.age_group)
           format {
             type: 'text'
           }
@@ -770,7 +762,7 @@ This format is especially useful for:
       ]
       columns: [
         VizFieldFull {
-          ref: ref('ecommerce_users', 'gender')
+          ref: r(ecommerce_users.gender)
           format {
             type: 'text'
           }
@@ -820,111 +812,6 @@ This format is especially useful for:
       }
     }
   }
-  block f3: FilterBlock {
-    label: 'Date'
-    type: 'date'
-    default {
-      operator: 'last'
-      value: '12'
-      modifier: 'month'
-      options {
-        include_current_period: true
-      }
-    }
-  }
-  block t17: TextBlock {
-    content: @md # 💰 Finance Overview
-
-This dashboard provides a comprehensive view of key financial metrics for the business.  
-Track the flow of marketplace value from **gross merchandise volume (GMV)** to **net merchandise value (NMV)**, and eventually to **platform revenue**.
-
-Use this to:
-- Monitor **sales performance** over time
-- Understand the impact of **refunds, cancellations**, and **discounts**
-- Quantify the **true revenue contribution** to the platform
-- Enable finance and ops teams to **forecast, benchmark, and optimize earnings**;;
-  }
-  block t19: TextBlock {
-    content: @md <hr>;;
-  }
-  block f4: FilterBlock {
-    label: 'Product Category'
-    type: 'field'
-    source: FieldFilterSource {
-      dataset: demo_ecommerce_version_2
-      field: ref('map_categories', 'parent_category')
-    }
-    default {
-      operator: 'is'
-      value: []
-    }
-  }
-  block t21: TextBlock {
-    content: @md ### 🧠 Defining GMV, NMV, Discounts, and Revenue
-
-To ensure consistent interpretation of financial metrics, here’s how value flows through the order lifecycle and how each metric is defined:
-
-1. **GMV (Gross Merchandise Value)**  
-   The total value of all orders before any discounts or fulfillment status is applied.  
-   _Formula: Quantity × Price (all orders)_
-
-2. **Total Discount**  
-   The monetary value of all discounts offered. It reflects the difference between what customers could have paid (GMV) and what they actually paid for fulfilled orders.  
-   _Formula: GMV – NMV_
-
-3. **NMV (Net Merchandise Value – Post-Discount & Fulfillment)**  
-   The actual amount paid by customers for orders that were **fulfilled** and **not cancelled or refunded**, adjusted for any applied discounts.  
-   This is the true revenue base — the value realized by the platform before commission.  
-   _Formula: Quantity × Price × (1 – Discount), only for fulfilled orders_
-
-4. **Revenue (Platform)**  
-   The amount our platform earns by applying a commission rate to NMV.  
-   In this demo, a **50% commission margin** is assumed.  
-   _Formula: NMV × revenue_commission_;;
-  }
-  block v44: VizBlock {
-    label: 'GMV Over Time'
-    viz: LineChart {
-      dataset: demo_ecommerce_version_2
-      theme {
-
-      }
-      x_axis: VizFieldFull {
-        ref: ref('ecommerce_orders', 'created_at')
-        transformation: 'datetrunc quarter'
-        format {
-          type: 'date'
-          pattern: 'yyyy Qq'
-        }
-      }
-      y_axis {
-        settings {
-          show_stack_total: true
-          stack_series_by: 'value'
-        }
-        series {
-          field: VizFieldFull {
-            ref: 'gmv'
-            format {
-              type: 'number'
-              pattern: 'inherited'
-            }
-          }
-        }
-      }
-      settings {
-        row_limit: 5000
-        x_axis_show_null_datetime: false
-        aggregate_awareness {
-          enabled: true
-          debug_comments: true
-        }
-      }
-    }
-  }
-  block t22: TextBlock {
-    content: @md <hr>;;
-  }
   block t23: TextBlock {
     content: @md ## 👥 User Demographic Insight
 **Analysis Last Updated on 20 May 2025 by Uncle Ben** </br>
@@ -965,20 +852,6 @@ This interaction is explained in the [Holistics View Underlying Data docs](https
 
 ⚠️ Customers who haven’t ordered in over **90 days** are visually flagged.  
 If you'd like to receive automated alerts for this, you can request the data team to set it up. Holistics supports alerting via **Slack**, **Email**, or **Webhooks**—see the [Holistics Data Alert documentation](https://docs.holistics.io/docs/delivery/data-alert) for setup details.;;
-  }
-  block t25: TextBlock {
-    content: @md ### 🧠 Order Fulfillment & Value Realization
-
-This section highlights how efficiently the platform is turning customer orders into actual fulfilled value.
-
-- **Total Orders** are grouped into two simplified delivery outcomes:
-  - ✅ **Success** = Delivered orders  
-  - ❌ **Failed** = Cancelled or Refunded orders  
-
-> 📌 **Want to go deeper?**  
-Use the **[Drill Down]** or **[View Underlying Data]** features to explore breakdowns by:
-- Refund vs cancellation volumes  
-- Order categories, vendors, or regions driving leakage;;
   }
   block v52a: VizBlock {
     label: 'NMV Realized from GMV'
@@ -1099,236 +972,6 @@ Use the **[Drill Down]** or **[View Underlying Data]** features to explore break
       }
     }
   }
-  block v52: VizBlock {
-    label: 'Last Quarter Success Order Rate'
-    viz: GaugeChart {
-      dataset: demo_ecommerce_version_2
-      calculation net_orders {
-        label: 'Net Orders'
-        formula: @aql total_orders - total_cancelled_orders - total_refunded_orders;;
-        calc_type: 'measure'
-        data_type: 'number'
-      }
-      calculation net_order_ratio {
-        label: 'Net Order Ratio'
-        formula: @aql net_orders*1.0/total_orders;;
-        calc_type: 'measure'
-        data_type: 'number'
-      }
-      calculation undelivered_orders {
-        label: 'Undelivered Orders'
-        formula: @aql total_orders-net_orders;;
-        calc_type: 'measure'
-        data_type: 'number'
-      }
-      calculation realized_gmv_target {
-        label: 'Realized GMV Target'
-        formula: @aql 0.85;;
-        calc_type: 'measure'
-        data_type: 'number'
-      }
-      filter {
-        field: ref('ecommerce_orders', 'created_at')
-        operator: 'last'
-        value: '1'
-        modifier: 'quarter'
-      }
-      theme {
-
-      }
-      value: VizFieldFull {
-        ref: 'net_order_ratio'
-        format {
-          type: 'number'
-          pattern: '#,###0.00%'
-          group_separator: ','
-          decimal_separator: '.'
-        }
-      }
-      max_value: VizFieldFull {
-        ref: 'realized_gmv_target'
-        format {
-          type: 'number'
-          pattern: '#,###%'
-        }
-      }
-      settings {
-        label: 'Success Order Rate'
-        row_limit: 5000
-        aggregate_awareness {
-          enabled: true
-          debug_comments: true
-        }
-      }
-    }
-  }
-  block v53: VizBlock {
-    label: 'Total Orders by Delivery Status'
-    viz: ColumnChart {
-      dataset: demo_ecommerce_version_2
-      calculation order_success_status {
-        label: 'Order Success Status'
-        formula: @aql case(
-  when: ecommerce_orders.status is 'delivered'
-  , then: 'success_order'
-  , else: 'failed_order'
-);;
-        calc_type: 'dimension'
-        data_type: 'text'
-        model: ecommerce_orders
-      }
-      calculation net_orders {
-        label: 'Net Orders'
-        formula: @aql total_orders - total_cancelled_orders - total_refunded_orders;;
-        calc_type: 'measure'
-        data_type: 'number'
-      }
-      calculation net_order_ratio {
-        label: 'Net Order Ratio'
-        formula: @aql net_orders*1.0/total_orders;;
-        calc_type: 'measure'
-        data_type: 'number'
-      }
-      calculation undelivered_orders {
-        label: 'Undelivered Orders'
-        formula: @aql total_orders-net_orders;;
-        calc_type: 'measure'
-        data_type: 'number'
-      }
-      theme {
-
-      }
-      x_axis: VizFieldFull {
-        ref: ref('ecommerce_orders', 'created_at')
-        transformation: 'datetrunc quarter'
-        format {
-          type: 'date'
-          pattern: 'yyyy Qq'
-        }
-      }
-      legend: VizFieldFull {
-        ref: ref('ecommerce_orders', 'order_success_status')
-        format {
-          type: 'text'
-        }
-      }
-      y_axis {
-        settings {
-          show_stack_total: true
-          show_data_label_by: 'value'
-          stack_series_by: 'value'
-        }
-        series {
-          field: VizFieldFull {
-            ref: 'total_orders'
-            format {
-              type: 'number'
-              pattern: 'inherited'
-            }
-          }
-        }
-      }
-      settings {
-        row_limit: 5000
-        x_axis_show_null_datetime: false
-        aggregate_awareness {
-          enabled: true
-          debug_comments: true
-        }
-      }
-    }
-  }
-  block v57: VizBlock {
-    label: 'Any Metrics by Product Category'
-    viz: BarChart {
-      dataset: demo_ecommerce_version_2
-      theme {
-
-      }
-      x_axis: VizFieldFull {
-        ref: ref('map_categories', 'parent_category')
-        format {
-          type: 'text'
-        }
-      }
-      legend: VizFieldFull {
-        ref: ref('map_categories', 'category')
-        format {
-          type: 'text'
-        }
-      }
-      y_axis {
-        settings {
-          show_data_label_by: 'value'
-          stack_series_by: 'value'
-        }
-        series {
-          field: VizFieldFull {
-            ref: 'dynamic_metric_currency'
-            format {
-              type: 'number'
-              pattern: 'inherited'
-            }
-          }
-        }
-      }
-      settings {
-        row_limit: 5000
-        legend_label: 'hidden'
-        x_axis_show_null_datetime: false
-        aggregate_awareness {
-          enabled: true
-          debug_comments: true
-        }
-      }
-    }
-  }
-  block v58: VizBlock {
-    label: 'Cohort Report by Product'
-    viz: RetentionHeatmap {
-      dataset: demo_ecommerce_version_2
-      theme {
-
-      }
-      cohort: VizFieldFull {
-        ref: ref('ecommerce_users', 'cohort_month')
-        transformation: 'datetrunc month'
-        format {
-          type: 'date'
-          pattern: 'LLL yyyy'
-        }
-      }
-      cohort_duration: VizFieldFull {
-        ref: ref('ecommerce_orders', 'month_number')
-        format {
-          type: 'number'
-          pattern: 'inherited'
-        }
-      }
-      cohort_value: VizFieldFull {
-        ref: 'retention'
-        format {
-          type: 'number'
-          pattern: 'inherited'
-        }
-      }
-      settings {
-        aggregate_awareness {
-          enabled: true
-          debug_comments: true
-        }
-      }
-    }
-  }
-  block f9: FilterBlock {
-    label: 'Date'
-    type: 'date'
-    default {
-      operator: 'last'
-      value: '12'
-      modifier: 'month'
-    }
-  }
   block t26: TextBlock {
     content: @md ### 📊 Explore User Sign-ups Over Time
 
@@ -1348,97 +991,6 @@ Whether you're in the main chart or within a drilled-down view:
 
 - Click **“View Underlying Data”** to explore the exact list of users who signed up.
 - Filter or export this raw data to investigate anomalies, campaign performance, or to follow up with user cohorts.;;
-  }
-  block f10: FilterBlock {
-    label: 'Select Metric'
-    type: 'field'
-    source: FieldFilterSource {
-      dataset: demo_ecommerce_version_2
-      field: ref('param_model_demo', 'metric_selections_currency')
-    }
-    default {
-      operator: 'is'
-      value: 'platform revenue'
-    }
-    settings {
-      input_type: 'single'
-    }
-  }
-  block f11: FilterBlock {
-    label: 'Country Name'
-    type: 'field'
-    source: FieldFilterSource {
-      dataset: demo_ecommerce_version_2
-      field: ref('ecommerce_countries', 'name')
-    }
-    default {
-      operator: 'is'
-      value: []
-    }
-  }
-  block t27: TextBlock {
-    content: @md # 📦 Product Overview
-
-This dashboard provides a unified view of key product metrics and customer behavior, designed to help business teams explore data independently with confidence.
-
-Every widget here is **fully dynamic and filter-aware**, powered by Holistics’s semantic layer and Analytics-as-Code engine—allowing the BI team to define once and reuse everywhere.;;
-  }
-  block t28: TextBlock {
-    content: @md ## 🔁 Unified Metric Selector: Focused Exploration, One Metric at a Time
-
-This dropdown lets users switch between key metrics—`GMV`, `NMV`, `AOV`, and more—while preserving the same dimension (e.g., Product Category).
-
-The chart updates dynamically with each metric change. The dimension stays fixed, so users can make apples-to-apples comparisons across different KPIs.
-
-> ✅ **Why it matters**: BI teams can reduce the upfront complexity by guiding users to **explore one metric at a time**, keeping the analysis clean and reducing cognitive load. It also avoids duplicating similar charts for each metric.
-;;
-  }
-  block t29: TextBlock {
-    content: @md ## 📊 Dynamic Cohort Analysis: Cohort Slicing by Any Filter
-
-This cohort report is tightly integrated with the filters above (date, metric, geography). Any change in those filters will immediately update this cohort breakdown.
-
-It allows business users to answer advanced questions like:
-- How does user behavior change by country or product?
-- What is the monthly retention pattern by product launch cohorts?
-
-> 🎯 **Why it matters**: With dynamic cohort logic, users can **slice cohorts by any permutation**—without BI creating custom cohort reports for every dimension or segment.
-;;
-  }
-  block t30: TextBlock {
-    content: @md The **% of GMV Realized** gauge reflects the portion of gross customer value (GMV) that was actually fulfilled and paid — our **NMV realization rate**. A healthy benchmark is **85–95%**. Currently, we’re at **~70%**, highlighting a gap worth investigating.
-;;
-  }
-  block t31: TextBlock {
-    content: @md ### 📚 Data Exploration Mini Tutorial
-
-Explore beyond static charts. Holistics empowers you to ask and answer your own questions with just a few clicks. Use the tutorials below to customize visualizations and unlock deeper insights from the same dataset — no SQL required.
-;;
-  }
-  block t32: TextBlock {
-    content: @md #### 📊 Tutorial 1: Add an Additional Metric (NMV)
-
-Overlay **Net Merchandise Value (NMV)** on top of the GMV chart to compare intended vs realized order value.
-
-1. Click **Explore Data** on the top-right of the GMV chart.
-2. Search and add the `NMV` field alongside `GMV`.
-3. Change the visualization from **Column Chart** to **Combination Chart** (Column + Line).
-4. Click **Save As** and store it to your **Private Workspace** folder for future use.
-5. Share your new chart with the BI team — show off what you’ve learned! 🎉;;
-  }
-  block t33: TextBlock {
-    content: @md #### 🔁 Tutorial 2: Add a Period-over-Period Comparison
-
-Uncover trends by comparing current performance against a previous period.
-
-1. Open *Explore Data** and go to **Visual Settings**.
-2. Under **Quick Period Comparison**, choose the time field: `ecommerce_orders.created_at`.
-3. Select a comparison window — e.g., **Previous 1 Year**.
-4. Use **Save As** to create and keep a version in your **Private Workspace** library.
-5. Share your new chart with the BI team — show off what you’ve learned! 🎉;;
-  }
-  block t34: TextBlock {
-    content: @md ![BI Workflow Diagram](https://www.holistics.io/blog/content/images/2018/02/final-diagram.png);;
   }
   block t35: TextBlock {
     content: @md <img src=""/>
@@ -1583,116 +1135,6 @@ Uncover trends by comparing current performance against a previous period.
         layer: 11
       }
     }
-    tab tab4: CanvasLayout {
-      label: 'Products'
-      width: 1180
-      height: 2240
-      grid_size: 20
-      block v57 {
-        position: pos(360, 540, 800, 340)
-        layer: 3
-      }
-      block v58 {
-        position: pos(20, 1160, 1100, 460)
-        layer: 6
-      }
-      block f9 {
-        position: pos(660, 140, 300, 100)
-        layer: 7
-      }
-      block f10 {
-        position: pos(40, 640, 300, 100)
-        layer: 8
-      }
-      block f11 {
-        position: pos(660, 20, 300, 100)
-        layer: 9
-      }
-      block t27 {
-        position: pos(20, 20, 620, 220)
-        layer: 10
-      }
-      block t28 {
-        position: pos(20, 320, 1140, 200)
-        layer: 11
-      }
-      block t29 {
-        position: pos(20, 900, 1140, 240)
-        layer: 12
-      }
-      block t34 {
-        position: pos(20, 1640, 1100, 580)
-        layer: 13
-      }
-      mobile {
-        mode: 'auto'
-      }
-    }
-    tab tab6: CanvasLayout {
-      label: 'Finance'
-      width: 1320
-      height: 1900
-      grid_size: 20
-      block f3 {
-        position: pos(660, 200, 300, 100)
-        layer: 2
-      }
-      block f4 {
-        position: pos(980, 200, 320, 100)
-        layer: 6
-      }
-      block t17 {
-        position: pos(20, 20, 620, 280)
-        layer: 3
-      }
-      block t19 {
-        position: pos(20, 320, 1280, 20)
-        layer: 5
-      }
-      block t21 {
-        position: pos(20, 360, 480, 620)
-        layer: 8
-      }
-      block t22 {
-        position: pos(40, 1620, 1280, 20)
-        layer: 1
-      }
-      block t25 {
-        position: pos(40, 1660, 880, 280)
-        layer: 11
-      }
-      block v44 {
-        position: pos(520, 360, 780, 620)
-        layer: 9
-      }
-      block v52 {
-        position: pos(960, 1660, 360, 280)
-        layer: 13
-      }
-      block v53 {
-        position: pos(20, 1820, 880, 300)
-        layer: 12
-      }
-      block t30 {
-        position: pos(940, 1820, 360, 180)
-        layer: 14
-      }
-      block t31 {
-        position: pos(40, 1240, 1280, 120)
-        layer: 15
-      }
-      block t32 {
-        position: pos(40, 1380, 680, 220)
-        layer: 16
-      }
-      block t33 {
-        position: pos(740, 1380, 580, 220)
-        layer: 17
-      }
-      mobile {
-        mode: 'auto'
-      }
-    }
   }
   theme: H.themes.classic
   interactions: [
@@ -1703,12 +1145,7 @@ Uncover trends by comparing current performance against a previous period.
           block: [
             'v34',
             'v37',
-            'v43',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v43'
           ]
           disabled: true
         }
@@ -1721,12 +1158,7 @@ Uncover trends by comparing current performance against a previous period.
           block: [
             'v34',
             'v37',
-            'v43',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v43'
           ]
           disabled: true
         }
@@ -1739,12 +1171,7 @@ Uncover trends by comparing current performance against a previous period.
           block: [
             'v34',
             'v37',
-            'v43',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v43'
           ]
           disabled: true
         }
@@ -1757,12 +1184,7 @@ Uncover trends by comparing current performance against a previous period.
           block: [
             'v34',
             'v37',
-            'v43',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v43'
           ]
           disabled: true
         }
@@ -1775,12 +1197,7 @@ Uncover trends by comparing current performance against a previous period.
           block: [
             'v34',
             'v37',
-            'v43',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v43'
           ]
           disabled: true
         }
@@ -1793,12 +1210,7 @@ Uncover trends by comparing current performance against a previous period.
           block: [
             'v34',
             'v37',
-            'v43',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v43'
           ]
           disabled: true
         }
@@ -1811,12 +1223,7 @@ Uncover trends by comparing current performance against a previous period.
           block: [
             'v34',
             'v37',
-            'v43',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v43'
           ]
           disabled: true
         }
@@ -1829,12 +1236,7 @@ Uncover trends by comparing current performance against a previous period.
           block: [
             'v34',
             'v37',
-            'v43',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v43'
           ]
           disabled: true
         }
@@ -1847,12 +1249,7 @@ Uncover trends by comparing current performance against a previous period.
           block: [
             'v34',
             'v37',
-            'v43',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v43'
           ]
           disabled: true
         }
@@ -1872,12 +1269,7 @@ Uncover trends by comparing current performance against a previous period.
             'v29',
             'v30',
             'v31',
-            'v36',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v36'
           ]
           disabled: true
         }
@@ -1890,12 +1282,7 @@ Uncover trends by comparing current performance against a previous period.
           block: [
             'v34',
             'v37',
-            'v43',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v43'
           ]
           disabled: true
         }
@@ -1915,12 +1302,7 @@ Uncover trends by comparing current performance against a previous period.
             'v29',
             'v30',
             'v31',
-            'v36',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v36'
           ]
           disabled: true
         }
@@ -1940,12 +1322,7 @@ Uncover trends by comparing current performance against a previous period.
             'v29',
             'v30',
             'v31',
-            'v34',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
+            'v34'
           ]
           disabled: true
         }
@@ -1965,240 +1342,7 @@ Uncover trends by comparing current performance against a previous period.
             'v29',
             'v30',
             'v31',
-            'v36',
-            'v44',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
-          ]
-          disabled: true
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'f4'
-      to: [
-        CustomMapping {
-          block: [
-            'v20',
-            'v21',
-            'v22',
-            'v25',
-            'v27',
-            'v28',
-            'v29',
-            'v30',
-            'v31',
-            'v34',
-            'v36',
-            'v37',
-            'v43',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
-          ]
-          disabled: true
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'v44'
-      to: [
-        CustomMapping {
-          block: [
-            'v20',
-            'v21',
-            'v22',
-            'v25',
-            'v27',
-            'v28',
-            'v29',
-            'v30',
-            'v31',
-            'v34',
-            'v36',
-            'v37',
-            'v43',
-            'v52',
-            'v53',
-            'v57',
-            'v58'
-          ]
-          disabled: true
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'v52a'
-      to: [
-        CustomMapping {
-          block: [
-            'v57',
-            'v58'
-          ]
-          disabled: true
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'v53a'
-      to: [
-        CustomMapping {
-          block: [
-            'v57',
-            'v58'
-          ]
-          disabled: true
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'v52'
-      to: [
-        CustomMapping {
-          block: [
-            'v20',
-            'v21',
-            'v22',
-            'v25',
-            'v27',
-            'v28',
-            'v29',
-            'v30',
-            'v31',
-            'v34',
-            'v36',
-            'v37',
-            'v43',
-            'v57',
-            'v58'
-          ]
-          disabled: true
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'v53'
-      to: [
-        CustomMapping {
-          block: [
-            'v57',
-            'v58'
-          ]
-          disabled: true
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'v57'
-      to: [
-        CustomMapping {
-          block: [
-            'v20',
-            'v21',
-            'v22',
-            'v25',
-            'v27',
-            'v28',
-            'v29',
-            'v30',
-            'v31',
-            'v34',
-            'v36',
-            'v37',
-            'v43',
-            'v44',
-            'v52a',
-            'v53a',
-            'v52',
-            'v53'
-          ]
-          disabled: true
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'v58'
-      to: [
-        CustomMapping {
-          block: [
-            'v20',
-            'v21',
-            'v22',
-            'v25',
-            'v27',
-            'v28',
-            'v29',
-            'v30',
-            'v31',
-            'v34',
-            'v36',
-            'v37',
-            'v43',
-            'v44',
-            'v52a',
-            'v53a',
-            'v52',
-            'v53'
-          ]
-          disabled: true
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'f10'
-      to: [
-        CustomMapping {
-          block: [
-            'v20',
-            'v21',
-            'v22',
-            'v25',
-            'v27',
-            'v28',
-            'v29',
-            'v30',
-            'v31',
-            'v34',
-            'v36',
-            'v37',
-            'v43',
-            'v44',
-            'v52a',
-            'v53a',
-            'v52',
-            'v53',
-            'v58'
-          ]
-          disabled: true
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'f11'
-      to: [
-        CustomMapping {
-          block: [
-            'v20',
-            'v21',
-            'v22',
-            'v25',
-            'v27',
-            'v28',
-            'v29',
-            'v30',
-            'v31',
-            'v34',
-            'v36',
-            'v37',
-            'v43',
-            'v44',
-            'v52a',
-            'v53a',
-            'v52',
-            'v53'
+            'v36'
           ]
           disabled: true
         }
@@ -2209,33 +1353,7 @@ Uncover trends by comparing current performance against a previous period.
       to: [
         CustomMapping {
           block: 'v37'
-          field: ref('ecommerce_users', 'sign_up_at')
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'f3'
-      to: [
-        CustomMapping {
-          block: [
-            'v53a',
-            'v52a',
-            'v53'
-          ]
-          field: ref('ecommerce_orders', 'created_at')
-        }
-      ]
-    },
-    FilterInteraction {
-      from: 'f9'
-      to: [
-        CustomMapping {
-          block: 'v58'
-          field: ref('ecommerce_users', 'cohort_month')
-        },
-        CustomMapping {
-          block: 'v57'
-          field: ref('ecommerce_orders', 'created_at')
+          field: r(ecommerce_users.sign_up_at)
         }
       ]
     }
