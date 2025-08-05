@@ -16,7 +16,7 @@ Dashboard ecommerce_dashboard_pro {
       }
       value: VizFieldFull {
         label: 'Products Listed'
-        ref: ref('ecommerce_products', 'total_products')
+        ref: r(ecommerce_products.total_products)
         format {
           type: 'number'
           pattern: '#,###'
@@ -205,11 +205,8 @@ Dashboard ecommerce_dashboard_pro {
     label: ' KPI Overview'
     viz: MetricSheet {
       dataset: demo_ecommerce_version_2
-      theme {
-
-      }
       date_field: VizFieldFull {
-        ref: ref('dim_dates', 'date_key')
+        ref: r(dim_dates.date_key)
         transformation: 'datetrunc month'
         format {
           type: 'date'
@@ -334,12 +331,9 @@ It brings together a consolidated view of:
     label: 'Total Orders by Continents'
     viz: PieChart {
       dataset: demo_ecommerce_version_2
-      theme {
-
-      }
       legend: VizFieldFull {
         label: 'Continent'
-        ref: ref('ecommerce_countries', 'continent_name')
+        ref: r(ecommerce_countries.continent_name)
         format {
           type: 'text'
         }
@@ -375,11 +369,8 @@ It brings together a consolidated view of:
     label: 'GMV (Sales) by Country Name'
     viz: BarChart {
       dataset: demo_ecommerce_version_2
-      theme {
-
-      }
       legend: VizFieldFull {
-        ref: ref('ecommerce_countries', 'name')
+        ref: r(ecommerce_countries.name)
         format {
           type: 'text'
         }
