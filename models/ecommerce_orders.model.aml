@@ -84,7 +84,7 @@ Model ecommerce_orders {
     aggregation_type: "custom"
   }
 
-  measure total_orders_number {
+  measure total_orders_count {
     label: "Total Orders Count"
     type: "number"
     definition: @sql COUNT({{ id }});;
