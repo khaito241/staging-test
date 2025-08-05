@@ -16,7 +16,7 @@ Dashboard ecommerce_dashboard_pro {
       }
       value: VizFieldFull {
         label: 'Products Listed'
-        ref: r(ecommerce_products.total_products)
+        ref: ref('ecommerce_products', 'total_products')
         format {
           type: 'number'
           pattern: '#,###'
