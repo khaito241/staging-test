@@ -223,7 +223,7 @@ Dashboard ecommerce_dashboard_pro {
         },
         MetricSeries {
           field: VizFieldFull {
-            ref: 'total_orders'
+            ref: r(ecommerce_orders.total_orders_count)
             format {
               type: 'number'
               pattern: 'inherited'
@@ -911,7 +911,7 @@ If you'd like to receive automated alerts for this, you can request the data tea
       hide_label: true
     }
   }
-  
+
   block t26: TextBlock {
     content: @md ### 📊 Explore User Sign-ups Over Time
 
