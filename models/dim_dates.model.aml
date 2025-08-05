@@ -5,9 +5,9 @@ Model dim_dates {
   data_source_name: 'demodb'
   dimension date_key {
     label: 'Date Key'
-    type: 'datetime'
+    type: 'date'
     hidden: false
-    definition: @sql {{ #SOURCE.date_key }};;
+    definition: @sql {{ #SOURCE.date_key }}::date;;
   }
   dimension day_of_week {
     label: 'Day Of Week'

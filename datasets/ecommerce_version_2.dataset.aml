@@ -22,7 +22,7 @@ Dataset demo_ecommerce_version_2 {
     relationship(ecommerce_order_items.product_id > ecommerce_products.id, true),
     relationship(ecommerce_products.merchant_id > ecommerce_merchants.id, true),
     relationship(ecommerce_products.category_id > map_categories.category_id, true),
-    relationship(ecommerce_orders.created_at > dim_dates.date_key, true),
+    relationship(ecommerce_orders.created_date > dim_dates.date_key, true),
   ]
 
   dimension cohort_month {
