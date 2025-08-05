@@ -223,7 +223,7 @@ Dashboard ecommerce_dashboard_pro {
         },
         MetricSeries {
           field: VizFieldFull {
-            ref: r(ecommerce_orders.total_orders_count)
+            ref: ref('ecommerce_orders', 'total_orders_count')
             format {
               type: 'number'
               pattern: 'inherited'
