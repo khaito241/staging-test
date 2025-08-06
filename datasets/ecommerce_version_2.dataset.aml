@@ -1,6 +1,6 @@
 Dataset demo_ecommerce_version_2 {
-  label: '[Demo] Ecommerce Official (2025)'
-  description: 'New dataset starting 2025'
+  label: '[Demo] Ecommerce Official'
+  description: ''
   data_source_name: 'demodb'
   models: [
     ecommerce_products,
