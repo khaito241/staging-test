@@ -263,6 +263,15 @@ Dashboard ecommerce_dashboard_pro {
         },
         MetricSeries {
           field: VizFieldFull {
+            ref: 'gmv'
+            format {
+              type: 'number'
+              pattern: 'inherited'
+            }
+          }
+        },
+        MetricSeries {
+          field: VizFieldFull {
             ref: 'nmv'
             format {
               type: 'number'
@@ -603,6 +612,13 @@ Young adult female customers (under 30) are currently our most valuable and loya
           }
         },
         VizFieldFull {
+          ref: 'total_orders'
+          format {
+            type: 'number'
+            pattern: 'inherited'
+          }
+        },
+        VizFieldFull {
           ref: 'total_repeated_buyers'
           format {
             type: 'number'
@@ -686,6 +702,19 @@ This format is especially useful for:
             format {
               type: 'number'
               pattern: 'inherited'
+            }
+          }
+        }
+        series {
+          field: VizFieldFull {
+            label: 'Trend line of Total Users'
+            ref: 'total_users'
+            format {
+              type: 'number'
+              pattern: 'inherited'
+            }
+            analytic: RegressionLine {
+              type: 'linear'
             }
           }
         }
