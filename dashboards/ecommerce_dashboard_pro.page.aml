@@ -705,6 +705,19 @@ This format is especially useful for:
             }
           }
         }
+        series {
+          field: VizFieldFull {
+            label: 'Trend line of Total Users'
+            ref: 'total_users'
+            format {
+              type: 'number'
+              pattern: 'inherited'
+            }
+            analytic: RegressionLine {
+              type: 'linear'
+            }
+          }
+        }
       }
       settings {
         row_limit: 5000
